@@ -114,6 +114,14 @@ oc get prometheusrule -A -o yaml | grep -E 'le="[0-9]+"' | grep -v '\.'
 
 # 搜尋所有 PrometheusRule 中使用整數 quantile 值的規則
 oc get prometheusrule -A -o yaml | grep -E 'quantile="[0-9]+"' | grep -v '\.'
+
+# 搜尋all namespace中的潛在問題的Promethus rule
+while read ns name; do
+  if oc get prometheusrule "$name" -n "$ns" -o yaml | grep -E 'le="[0-9]+"' | grep -q -v '\.'; then
+    echo "⚠️ 發現需要檢查的規則 -> Namespace: $ns | Name: $name"
+  fi
+done
+
 ```
 
 ---
