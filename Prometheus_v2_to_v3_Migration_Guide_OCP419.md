@@ -116,7 +116,7 @@ oc get prometheusrule -A -o yaml | grep -E 'le="[0-9]+"' | grep -v '\.'
 oc get prometheusrule -A -o yaml | grep -E 'quantile="[0-9]+"' | grep -v '\.'
 
 # 搜尋all namespace中的潛在問題的Promethus rule
-while read ns name; do
+oc get prometheusrule -A -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name" | tail -n +2 | while read ns name; do
   if oc get prometheusrule "$name" -n "$ns" -o yaml | grep -E 'le="[0-9]+"' | grep -q -v '\.'; then
     echo "⚠️ 發現需要檢查的規則 -> Namespace: $ns | Name: $name"
   fi
